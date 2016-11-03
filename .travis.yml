@@ -6,4 +6,9 @@ services:
   - docker
 
 before_install:
-  ./test_setup.sh
+  - go get github.com/mattn/goveralls
+  - ./test_setup.sh
+
+script:
+  - $HOME/gopath/bin/goveralls -service=travis-ci
+
