@@ -1,6 +1,6 @@
 # gorocket
 [![Build Status](https://travis-ci.org/detached/gorocket.svg?branch=master)](https://travis-ci.org/detached/gorocket)
-[![Coverage Status](https://coveralls.io/repos/github/detached/gorocket/badge.svg?branch=coverall)](https://coveralls.io/github/detached/gorocket?branch=coverall)
+[![Coverage Status](https://coveralls.io/repos/github/detached/gorocket/badge.svg?branch=master)](https://coveralls.io/github/detached/gorocket?branch=master)
 
 RocketChat client for golang
 
