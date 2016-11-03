@@ -1,4 +1,6 @@
 # gorocket
+[![Build Status](https://travis-ci.org/detached/gorocket.svg?branch=master)](https://travis-ci.org/detached/gorocket)
+
 RocketChat client for golang
 
 This library makes use of [github.com/gopackage/ddp](https://github.com/gopackage/ddp) to register users.
