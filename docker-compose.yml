@@ -1,0 +1,13 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:3.2
+    command: --smallfiles
+  rocketchat:
+    image: rocketchat/rocket.chat:latest
+    environment:
+      - ROOT_URL=http://localhost:3000
+    depends_on:
+      - mongo
+    ports:
+      - 3000:3000
