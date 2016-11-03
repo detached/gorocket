@@ -1,0 +1,9 @@
+language: go
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  ./test_setup.sh
