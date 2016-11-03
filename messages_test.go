@@ -16,7 +16,7 @@ func TestRocket_SendAndReceive(t *testing.T) {
 	err = rocket.Send(general, "Test")
 	assert.Nil(t, err)
 
-	messages, err := rocket.GetMessages(general, nil)
+	messages, err := rocket.GetMessages(general, &Page{Skip: 0, Limit: 10})
 	assert.Nil(t, err)
 
 	message := findMessage(messages, testUserName, "Test")
