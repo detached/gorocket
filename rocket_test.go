@@ -25,7 +25,7 @@ func getDefaultClient(t *testing.T) *Rocket {
 }
 
 func getAuthenticatedClient(t *testing.T, name, email, password string) *Rocket {
-	client := Rocket{Protocol: testProtocol, Host: testHost, Port: testPort}
+	client := Rocket{Protocol: testProtocol, Host: testHost, Port: testPort, Debug: true}
 	credentials := UserCredentials{Name:name, Email:email, Password:password}
 
 	regErr := client.RegisterUser(credentials)
@@ -47,8 +47,8 @@ func findMessage(messages []Message, user string, msg string) *Message {
 	return nil
 }
 
-func getRoom(rooms []Room, name string) *Room {
-	for _, r := range rooms {
+func getChannel(channels []Channel, name string) *Channel {
+	for _, r := range channels {
 		if r.Name == name {
 			return &r
 		}

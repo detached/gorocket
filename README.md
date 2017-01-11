@@ -33,17 +33,17 @@ rocket.RegisterUser(UserCredentials{Name:"userName", Email:"user@domain.com", Pa
 rocket.Login(UserCredentials{Name:"userName", Email:"user@domain.com", Password:"userPassword"})
 ```
 
-###Get public rooms
+###Get public channels
 ```
-rooms, err := rocket.GetPublicRooms()
+channels, err := rocket.GetPublicChannels()
 ```
 
 ###Send message
 ```
-rocket.Send(room, "Text")
+rocket.Send(channel, "Text")
 ```
 
 ###Get messages
 ```
-messages, err := rocket.GetMessages(room, &Page{Skip: 10, Limit: 20})
+messages, err := rocket.GetMessages(channel, &Page{Skip: 10, Limit: 20})
 ```

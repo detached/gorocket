@@ -8,10 +8,10 @@ import (
 func TestRocket_SendAndReceive(t *testing.T) {
 	rocket := getDefaultClient(t)
 
-	rooms, err := rocket.GetPublicRooms()
+	rooms, err := rocket.GetPublicChannels()
 	assert.Nil(t, err)
 
-	general := getRoom(rooms, "general")
+	general := getChannel(rooms, "general")
 
 	err = rocket.Send(general, "Test")
 	assert.Nil(t, err)

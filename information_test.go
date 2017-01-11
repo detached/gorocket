@@ -6,7 +6,7 @@ import (
 )
 
 func TestRocket_GetVersions(t *testing.T) {
-	rocket := Rocket{Protocol:testProtocol, Host:testHost, Port:testPort, Debug:true}
+	rocket := Rocket{Protocol:testProtocol, Host:testHost, Port:testPort}
 
 	versions, err := rocket.GetVersions()
 

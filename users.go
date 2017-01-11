@@ -60,7 +60,7 @@ type ddpPassword struct {
 
 func (r *Rocket) Login(credentials UserCredentials) error {
 	data := url.Values{"user": {credentials.Email}, "password": {credentials.Password}}
-	request, _ := http.NewRequest("POST", r.getUrl() + "/api/login", bytes.NewBufferString(data.Encode()))
+	request, _ := http.NewRequest("POST", r.getUrl() + "/api/v1/login", bytes.NewBufferString(data.Encode()))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	response := new(logonResponse)
@@ -83,7 +83,7 @@ func (r *Rocket) Logout() (string, error) {
 		return "Was not logged in", nil
 	}
 
-	request, _ := http.NewRequest("POST", r.getUrl() + "/api/logout", nil)
+	request, _ := http.NewRequest("POST", r.getUrl() + "/api/v1/logout", nil)
 
 	response := new(logoutResponse)
 
@@ -98,7 +98,7 @@ func (r *Rocket) Logout() (string, error) {
 	}
 }
 
-func (r *Rocket) GetOnlineUsers(room *Room) ([]string, error) {
+func (r *Rocket) GetOnlineUsers(room *Channel) ([]string, error) {
 	request, _ := http.NewRequest("GET", fmt.Sprintf("%s/api/rooms/%s/online", r.getUrl(), room.Id), nil)
 
 	response := new(onlineUsersResponse)

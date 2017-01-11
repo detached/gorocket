@@ -25,7 +25,7 @@ type Page struct {
 	Limit int
 }
 
-func (r *Rocket) Send(room *Room, msg string) error {
+func (r *Rocket) Send(room *Channel, msg string) error {
 	b, _ := json.Marshal(&Message{Text:msg})
 	request, _ := http.NewRequest("POST", fmt.Sprintf("%s/api/rooms/%s/send", r.getUrl(), room.Id), bytes.NewBuffer(b))
 
@@ -34,7 +34,7 @@ func (r *Rocket) Send(room *Room, msg string) error {
 	return r.doRequest(request, response)
 }
 
-func (r *Rocket) GetMessages(room *Room, page *Page) ([]Message, error) {
+func (r *Rocket) GetMessages(room *Channel, page *Page) ([]Message, error) {
 	u := fmt.Sprintf("%s/api/rooms/%s/messages", r.getUrl(), room.Id)
 
 	if page != nil {
