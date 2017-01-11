@@ -1,3 +1,6 @@
+:boom: This library is not compatible to the current RocketChat API version as the API changed significant in the last 2 months.
+I am currently working on an update.
+
 # gorocket
 [![Build Status](https://travis-ci.org/detached/gorocket.svg?branch=master)](https://travis-ci.org/detached/gorocket)
 [![Coverage Status](https://coveralls.io/repos/github/detached/gorocket/badge.svg?branch=master)](https://coveralls.io/github/detached/gorocket?branch=master)
