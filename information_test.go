@@ -6,12 +6,11 @@ import (
 )
 
 func TestRocket_GetVersions(t *testing.T) {
-	rocket := Rocket{Protocol:testProtocol, Host:testHost, Port:testPort}
+	rocket := Rocket{Protocol:testProtocol, Host:testHost, Port:testPort, Debug:true}
 
 	versions, err := rocket.GetVersions()
 
 	assert.Nil(t, err)
 	assert.NotNil(t, versions)
-	assert.NotEmpty(t, versions.Api)
-	assert.NotEmpty(t, versions.RocketChat)
+	assert.NotEmpty(t, versions.Version)
 }
