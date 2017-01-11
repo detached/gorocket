@@ -45,5 +45,10 @@ rocket.Send(channel, "Text")
 
 ###Get messages
 ```
-messages, err := rocket.GetMessages(channel, &Page{Skip: 10, Limit: 20})
+messages, err := rocket.GetMessages(channel, &Page{Count: 20})
+```
+or without pagination
+
+```
+messages, err := rocket.GetMessages(channel, nil)
 ```
