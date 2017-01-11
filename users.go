@@ -79,7 +79,7 @@ func (r *Rocket) Login(credentials UserCredentials) error {
 
 func (r *Rocket) Logout() (string, error) {
 
-	if (r.auth == nil) {
+	if r.auth == nil {
 		return "Was not logged in", nil
 	}
 
@@ -113,7 +113,7 @@ func (r *Rocket) RegisterUser(credentials UserCredentials) error {
 	ddpClient := ddp.NewClient(fmt.Sprintf("ws://%v:%v/websocket", r.Host, r.Port), "http://" + r.Host)
 	err := ddpClient.Connect()
 
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 

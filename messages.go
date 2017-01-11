@@ -37,7 +37,7 @@ func (r *Rocket) Send(room *Room, msg string) error {
 func (r *Rocket) GetMessages(room *Room, page *Page) ([]Message, error) {
 	u := fmt.Sprintf("%s/api/rooms/%s/messages", r.getUrl(), room.Id)
 
-	if (page != nil) {
+	if page != nil {
 		u = fmt.Sprintf("%s?skip=%d&limit=%d", u, page.Skip, page.Limit)
 	}
 

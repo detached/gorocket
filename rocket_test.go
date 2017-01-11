@@ -17,7 +17,7 @@ var (
 
 func getDefaultClient(t *testing.T) *Rocket {
 
-	if (rocketClient == nil) {
+	if rocketClient == nil {
 		rocketClient = getAuthenticatedClient(t, testUserName, testUserEmail, testPassword)
 	}
 
