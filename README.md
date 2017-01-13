@@ -4,7 +4,7 @@
 
 RocketChat client for golang
 
-This library makes use of [github.com/gopackage/ddp](https://github.com/gopackage/ddp) to register users.
+This library makes use of [gopackage/ddp](https://github.com/gopackage/ddp) to register users.
 
 # Usage
 
