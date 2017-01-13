@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"log"
 	"fmt"
+	"github.com/gopackage/ddp"
 )
 
 type Rocket struct {
@@ -24,6 +25,8 @@ type Rocket struct {
 	Debug bool
 
 	auth  *authInfo
+
+	ddpClient *ddp.Client
 }
 
 type authInfo struct {
@@ -39,6 +42,26 @@ type statusResponse struct {
 
 func (r *Rocket) getUrl() string {
 	return fmt.Sprintf("%v://%v:%v", r.Protocol, r.Host, r.Port)
+}
+
+func (r *Rocket) getDdpClient() (*ddp.Client, error) {
+
+	if r.ddpClient == nil {
+		r.ddpClient = ddp.NewClient(fmt.Sprintf("ws://%v:%v/websocket", r.Host, r.Port), "http://"+r.Host)
+
+		if err := r.ddpClient.Connect(); err != nil {
+			return nil, err
+		}
+	}
+
+	return r.ddpClient, nil
+}
+
+// Closes the ddp session, if any.
+func (r *Rocket) Close() {
+	if r.ddpClient != nil {
+		r.ddpClient.Close()
+	}
 }
 
 func (r *Rocket) doRequest(request *http.Request, responseBody interface{}) error {
