@@ -3,7 +3,6 @@ package gorocket
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"fmt"
 )
 
 func TestRocket_GetServerInfo(t *testing.T) {
