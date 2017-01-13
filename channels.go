@@ -6,9 +6,14 @@ import (
 	"bytes"
 )
 
-type channelResponse struct {
+type channelsResponse struct {
 	Success  bool `json:"success"`
 	Channels []Channel `json:"channels"`
+}
+
+type channelResponse struct {
+	Success bool `json:"success"`
+	Channel Channel `json:"channel"`
 }
 
 type Channel struct {
@@ -31,7 +36,7 @@ type Channel struct {
 // https://rocket.chat/docs/developer-guides/rest-api/channels/list
 func (r *Rocket) GetPublicChannels() ([]Channel, error) {
 	request, _ := http.NewRequest("GET", r.getUrl() + "/api/v1/channels.list", nil)
-	response := new(channelResponse)
+	response := new(channelsResponse)
 
 	if err := r.doRequest(request, response); err != nil {
 		return nil, err
@@ -45,7 +50,7 @@ func (r *Rocket) GetPublicChannels() ([]Channel, error) {
 // https://rocket.chat/docs/developer-guides/rest-api/channels/list-joined
 func (r *Rocket) GetJoinedChannels() ([]Channel, error) {
 	request, _ := http.NewRequest("GET", r.getUrl() + "/api/v1/channels.list.joined", nil)
-	response := new(channelResponse)
+	response := new(channelsResponse)
 
 	if err := r.doRequest(request, response); err != nil {
 		return nil, err
@@ -72,3 +77,17 @@ func (r *Rocket) LeaveChannel(channel *Channel) error {
 	return r.doRequest(request, new(statusResponse))
 }
 
+// Get information about a channel. That might be useful to update the usernames.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/channels/info
+func (r *Rocket) GetChannelInfo(channel *Channel) (*Channel, error) {
+	var url = fmt.Sprintf("%s/api/v1/channels.info?roomId=%s", r.getUrl(), channel.Id)
+	request, _ := http.NewRequest("GET", url, nil)
+	response := new(channelResponse)
+
+	if err := r.doRequest(request, response); err != nil {
+		return nil, err
+	}
+
+	return &response.Channel, nil
+}

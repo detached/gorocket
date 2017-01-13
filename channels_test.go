@@ -45,3 +45,25 @@ func TestRocket_LeaveChannel(t *testing.T) {
 	err = rocket.LeaveChannel(general)
 	assert.Nil(t, err)
 }
+
+func TestRocket_GetChannelInfo(t *testing.T) {
+	rocket := getDefaultClient(t)
+
+	rooms, err := rocket.GetPublicChannels()
+	assert.Nil(t, err)
+
+	general := getChannel(rooms, "general")
+	err = rocket.JoinChannel(general)
+	assert.Nil(t, err)
+
+	updatedChannelInfo, err := rocket.GetChannelInfo(general)
+	assert.Nil(t, err)
+	assert.NotNil(t, updatedChannelInfo)
+
+	assert.Equal(t, general.Id, updatedChannelInfo.Id)
+	assert.NotEmpty(t, updatedChannelInfo.Name)
+	assert.NotEmpty(t, updatedChannelInfo.T)
+	assert.NotEmpty(t, updatedChannelInfo.UpdatedAt)
+	assert.NotEmpty(t, updatedChannelInfo.Timestamp)
+	assert.NotZero(t, len(updatedChannelInfo.UserNames))
+}

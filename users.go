@@ -104,17 +104,6 @@ func (r *Rocket) Logout() (string, error) {
 	}
 }
 
-func (r *Rocket) GetOnlineUsers(room *Channel) ([]string, error) {
-	request, _ := http.NewRequest("GET", fmt.Sprintf("%s/api/rooms/%s/online", r.getUrl(), room.Id), nil)
-
-	response := new(onlineUsersResponse)
-	if err := r.doRequest(request, response); err != nil {
-		return nil, err
-	}
-
-	return response.Names, nil
-}
-
 // Register a new user on the server. This function does not need a logged in user.
 //
 // The ddp methods 'registerUser' and 'setUsername' are not documented.
