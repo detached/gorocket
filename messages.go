@@ -1,15 +1,22 @@
 package gorocket
 
 import (
-	"encoding/json"
 	"fmt"
 	"bytes"
 	"net/http"
+	"html"
 )
 
 type messagesResponse struct {
 	statusResponse
+	ChannelName string `json:"channel"`
 	Messages []Message `json:"messages"`
+}
+
+type messageResponse struct {
+	statusResponse
+	ChannelName string `json:"channel"`
+	Message Message `json:"message"`
 }
 
 type Message struct {
@@ -21,24 +28,31 @@ type Message struct {
 }
 
 type Page struct {
-	Skip int
-	Limit int
+	Count int
 }
 
-func (r *Rocket) Send(room *Room, msg string) error {
-	b, _ := json.Marshal(&Message{Text:msg})
-	request, _ := http.NewRequest("POST", fmt.Sprintf("%s/api/rooms/%s/send", r.getUrl(), room.Id), bytes.NewBuffer(b))
+// Sends a message to a channel. The name of the channel has to be not nil.
+// The message will be html escaped.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/chat/postmessage
+func (r *Rocket) Send(channel *Channel, msg string) error {
+	body := fmt.Sprintf(`{ "channel": "%s", "text": "%s"}`, channel.Name, html.EscapeString(msg))
+	request, _ := http.NewRequest("POST", r.getUrl() + "/api/v1/chat.postMessage", bytes.NewBufferString(body))
 
-	response := new(statusResponse)
+	response := new(messageResponse)
 
 	return r.doRequest(request, response)
 }
 
-func (r *Rocket) GetMessages(room *Room, page *Page) ([]Message, error) {
-	u := fmt.Sprintf("%s/api/rooms/%s/messages", r.getUrl(), room.Id)
+// Get messages from a channel. The channel id has to be not nil. Optionally a
+// count can be specified to limit the size of the returned messages.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/channels/history
+func (r *Rocket) GetMessages(channel *Channel, page *Page) ([]Message, error) {
+	u := fmt.Sprintf("%s/api/v1/channels.history?roomId=%s", r.getUrl(), channel.Id)
 
-	if (page != nil) {
-		u = fmt.Sprintf("%s?skip=%d&limit=%d", u, page.Skip, page.Limit)
+	if page != nil {
+		u = fmt.Sprintf("%s&count=%d", u, page.Count)
 	}
 
 	request, _ := http.NewRequest("GET", u, nil)

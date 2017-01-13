@@ -12,6 +12,5 @@ func TestRocket_GetVersions(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.NotNil(t, versions)
-	assert.NotEmpty(t, versions.Api)
-	assert.NotEmpty(t, versions.RocketChat)
+	assert.NotEmpty(t, versions.Version)
 }

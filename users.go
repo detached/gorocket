@@ -58,9 +58,12 @@ type ddpPassword struct {
 	Algorithm string `json:"algorithm"`
 }
 
+// Login a user. The Email and the Password are mandatory. The auth token of the user is stored in the Rocket instance.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/authentication/login
 func (r *Rocket) Login(credentials UserCredentials) error {
 	data := url.Values{"user": {credentials.Email}, "password": {credentials.Password}}
-	request, _ := http.NewRequest("POST", r.getUrl() + "/api/login", bytes.NewBufferString(data.Encode()))
+	request, _ := http.NewRequest("POST", r.getUrl() + "/api/v1/login", bytes.NewBufferString(data.Encode()))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	response := new(logonResponse)
@@ -77,13 +80,16 @@ func (r *Rocket) Login(credentials UserCredentials) error {
 	}
 }
 
+// Logout a user. The function returns the response message of the server.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/authentication/logout
 func (r *Rocket) Logout() (string, error) {
 
-	if (r.auth == nil) {
+	if r.auth == nil {
 		return "Was not logged in", nil
 	}
 
-	request, _ := http.NewRequest("POST", r.getUrl() + "/api/logout", nil)
+	request, _ := http.NewRequest("POST", r.getUrl() + "/api/v1/logout", nil)
 
 	response := new(logoutResponse)
 
@@ -98,22 +104,15 @@ func (r *Rocket) Logout() (string, error) {
 	}
 }
 
-func (r *Rocket) GetOnlineUsers(room *Room) ([]string, error) {
-	request, _ := http.NewRequest("GET", fmt.Sprintf("%s/api/rooms/%s/online", r.getUrl(), room.Id), nil)
-
-	response := new(onlineUsersResponse)
-	if err := r.doRequest(request, response); err != nil {
-		return nil, err
-	}
-
-	return response.Names, nil
-}
-
+// Register a new user on the server. This function does not need a logged in user.
+//
+// The ddp methods 'registerUser' and 'setUsername' are not documented.
+// https://rocket.chat/docs/developer-guides/realtime-api/method-calls/login/
 func (r *Rocket) RegisterUser(credentials UserCredentials) error {
 	ddpClient := ddp.NewClient(fmt.Sprintf("ws://%v:%v/websocket", r.Host, r.Port), "http://" + r.Host)
 	err := ddpClient.Connect()
 
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 

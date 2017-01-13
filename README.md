@@ -7,7 +7,7 @@ I am currently working on an update.
 
 RocketChat client for golang
 
-This library makes use of [github.com/gopackage/ddp](https://github.com/gopackage/ddp) to register users.
+This library makes use of [gopackage/ddp](https://github.com/gopackage/ddp) to register users without prior authentication.
 
 # Usage
 
@@ -36,17 +36,24 @@ rocket.RegisterUser(UserCredentials{Name:"userName", Email:"user@domain.com", Pa
 rocket.Login(UserCredentials{Name:"userName", Email:"user@domain.com", Password:"userPassword"})
 ```
 
-###Get public rooms
+###Get public channels
 ```
-rooms, err := rocket.GetPublicRooms()
+channels, err := rocket.GetPublicChannels()
 ```
 
 ###Send message
 ```
-rocket.Send(room, "Text")
+rocket.Send(channel, "Text")
 ```
 
 ###Get messages
 ```
-messages, err := rocket.GetMessages(room, &Page{Skip: 10, Limit: 20})
+messages, err := rocket.GetMessages(channel, &Page{Count: 20})
 ```
+or without pagination
+
+```
+messages, err := rocket.GetMessages(channel, nil)
+```
+
+For more information checkout the [godoc](https://godoc.org/github.com/detached/gorocket) and the test files.

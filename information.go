@@ -1,22 +1,23 @@
 package gorocket
 
 import (
-	"errors"
 	"net/http"
 )
 
-type versionResponse struct{
-	statusResponse
-	Versions Versions `json:"versions"`
+type versionResponse struct {
+	Info Versions `json:"info"`
 }
 
 type Versions struct {
-	Api string `json:"api"`
-	RocketChat string `json:"rocketchat"`
+	Version string `json:"version"`
 }
 
+// Get version information from the server.
+// This function does not need a logged in user.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/miscellaneous/info
 func (r *Rocket) GetVersions() (*Versions, error) {
-	request, _ := http.NewRequest("GET", r.getUrl() + "/api/version", nil)
+	request, _ := http.NewRequest("GET", r.getUrl() + "/api/v1/info", nil)
 
 	response := new(versionResponse)
 
@@ -24,9 +25,5 @@ func (r *Rocket) GetVersions() (*Versions, error) {
 		return nil, err
 	}
 
-	if response.Status == "success" {
-		return &response.Versions, nil
-	} else {
-		return nil, errors.New("Response status: " + response.Status)
-	}
+	return &response.Info, nil;
 }

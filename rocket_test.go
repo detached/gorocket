@@ -17,7 +17,7 @@ var (
 
 func getDefaultClient(t *testing.T) *Rocket {
 
-	if (rocketClient == nil) {
+	if rocketClient == nil {
 		rocketClient = getAuthenticatedClient(t, testUserName, testUserEmail, testPassword)
 	}
 
@@ -47,8 +47,8 @@ func findMessage(messages []Message, user string, msg string) *Message {
 	return nil
 }
 
-func getRoom(rooms []Room, name string) *Room {
-	for _, r := range rooms {
+func getChannel(channels []Channel, name string) *Channel {
+	for _, r := range channels {
 		if r.Name == name {
 			return &r
 		}
