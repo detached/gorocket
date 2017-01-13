@@ -52,3 +52,5 @@ or without pagination
 ```
 messages, err := rocket.GetMessages(channel, nil)
 ```
+
+For more information checkout the [godoc](https://godoc.org/github.com/detached/gorocket) and the test files.
