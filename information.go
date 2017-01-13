@@ -12,6 +12,10 @@ type Versions struct {
 	Version string `json:"version"`
 }
 
+// Get version information from the server.
+// This function does not need a logged in user.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/miscellaneous/info
 func (r *Rocket) GetVersions() (*Versions, error) {
 	request, _ := http.NewRequest("GET", r.getUrl() + "/api/v1/info", nil)
 

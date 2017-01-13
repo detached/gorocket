@@ -58,6 +58,9 @@ type ddpPassword struct {
 	Algorithm string `json:"algorithm"`
 }
 
+// Login a user. The Email and the Password are mandatory. The auth token of the user is stored in the Rocket instance.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/authentication/login
 func (r *Rocket) Login(credentials UserCredentials) error {
 	data := url.Values{"user": {credentials.Email}, "password": {credentials.Password}}
 	request, _ := http.NewRequest("POST", r.getUrl() + "/api/v1/login", bytes.NewBufferString(data.Encode()))
@@ -77,6 +80,9 @@ func (r *Rocket) Login(credentials UserCredentials) error {
 	}
 }
 
+// Logout a user. The function returns the response message of the server.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/authentication/logout
 func (r *Rocket) Logout() (string, error) {
 
 	if r.auth == nil {
@@ -109,6 +115,10 @@ func (r *Rocket) GetOnlineUsers(room *Channel) ([]string, error) {
 	return response.Names, nil
 }
 
+// Register a new user on the server. This function does not need a logged in user.
+//
+// The ddp methods 'registerUser' and 'setUsername' are not documented.
+// https://rocket.chat/docs/developer-guides/realtime-api/method-calls/login/
 func (r *Rocket) RegisterUser(credentials UserCredentials) error {
 	ddpClient := ddp.NewClient(fmt.Sprintf("ws://%v:%v/websocket", r.Host, r.Port), "http://" + r.Host)
 	err := ddpClient.Connect()
