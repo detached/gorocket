@@ -3,21 +3,41 @@ package gorocket
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
+	"time"
 )
+
+const chars = "abcdefghijklmnopqrstuvwxyz0123456789"
 
 var (
 	testProtocol = "http"
 	testHost = "localhost"
 	testPort = "3000"
-	testUserName = "test"
-	testUserEmail = "test@test.de"
+	testUserName string
+	testUserEmail string
 	testPassword = "test"
 	rocketClient *Rocket
 )
 
+func getRandomString() string {
+	length := 6
+	rand.Seed(time.Now().UTC().UnixNano())
+	result := make([]byte, length)
+	for i := 0; i < length; i++ {
+		result[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(result)
+}
+
+func getRandomEmail() string {
+	return getRandomString() + "@localhost.com"
+}
+
 func getDefaultClient(t *testing.T) *Rocket {
 
 	if rocketClient == nil {
+		testUserEmail = getRandomEmail()
+		testUserName = getRandomString()
 		rocketClient = getAuthenticatedClient(t, testUserName, testUserEmail, testPassword)
 	}
 

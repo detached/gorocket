@@ -6,8 +6,11 @@ import (
 )
 
 func TestRocket_LoginLogout(t *testing.T) {
-	client := getAuthenticatedClient(t, "loginLogout", "login@logout.de", "loginLogout")
-
+	client := getAuthenticatedClient(t, getRandomString(), getRandomEmail(), getRandomString())
 	_, logoutErr := client.Logout()
 	assert.Nil(t, logoutErr)
+
+	channels, err := client.GetJoinedChannels()
+	assert.Nil(t, channels)
+	assert.NotNil(t, err)
 }
