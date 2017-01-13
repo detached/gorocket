@@ -17,17 +17,11 @@ type User struct {
 	UserName string `json:"username"`
 }
 
-type onlineUsersResponse struct {
-	statusResponse
-	Names []string `json:"online"`
-}
-
 type UserCredentials struct{
 	Email string `json:"email"`
 	Name string `json:"name"`
 	Password string `json:"pass"`
 }
-
 
 type logoutResponse struct {
 	statusResponse
