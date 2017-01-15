@@ -10,5 +10,5 @@ before_install:
   - ./test_setup.sh
 
 script:
-  - make coverage
+  - make get coverage
 
