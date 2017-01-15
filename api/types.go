@@ -1,11 +1,37 @@
-package gorocket
+package api
 
-import (
-	"net/http"
-)
+type Channel struct {
+	Id           string `json:"_id"`
+	Name         string `json:"name"`
+	MessageCount int `json:"msgs"`
+	UserNames    []string `json:"usernames"`
 
-type infoResponse struct {
-	Info Info `json:"info"`
+	User         User `json:"u"`
+
+	ReadOnly     bool `json:"ro"`
+	Timestamp    string `json:"ts"`
+	T            string `json:"t"`
+	UpdatedAt    string `json:"_updatedAt"`
+	SysMes       bool `json:"sysMes"`
+}
+
+type User struct {
+	Id       string `json:"_id"`
+	UserName string `json:"username"`
+}
+
+type UserCredentials struct {
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Password string `json:"pass"`
+}
+
+type Message struct {
+	Id        string `json:"_id"`
+	ChannelId string `json:"rid"`
+	Text      string `json:"msg"`
+	Timestamp string `json:"ts"`
+	User      User `json:"u"`
 }
 
 type Info struct {
@@ -45,20 +71,4 @@ type Info struct {
 		Enabled bool `json:"enabled"`
 		Version string `json:"version"`
 	} `json:"ImageMagick"`
-}
-
-// Get information about the server.
-// This function does not need a logged in user.
-//
-// https://rocket.chat/docs/developer-guides/rest-api/miscellaneous/info
-func (r *Rocket) GetServerInfo() (*Info, error) {
-	request, _ := http.NewRequest("GET", r.getUrl() + "/api/v1/info", nil)
-
-	response := new(infoResponse)
-
-	if err := r.doRequest(request, response); err != nil {
-		return nil, err
-	}
-
-	return &response.Info, nil
 }

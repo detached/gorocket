@@ -3,10 +3,11 @@ package gorocket
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/detached/gorocket/common_testing"
 )
 
 func TestRocket_GetServerInfo(t *testing.T) {
-	rocket := Rocket{Protocol:testProtocol, Host:testHost, Port:testPort}
+	rocket := Client{Protocol:common_testing.Protocol, Host:common_testing.Host, Port:common_testing.Port}
 
 	info, err := rocket.GetServerInfo()
 

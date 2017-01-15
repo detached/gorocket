@@ -3,10 +3,11 @@ package gorocket
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/detached/gorocket/common_testing"
 )
 
 func TestRocket_LoginLogout(t *testing.T) {
-	client := getAuthenticatedClient(t, getRandomString(), getRandomEmail(), getRandomString())
+	client := getAuthenticatedClient(t, common_testing.GetRandomString(), common_testing.GetRandomEmail(), common_testing.GetRandomString())
 	_, logoutErr := client.Logout()
 	assert.Nil(t, logoutErr)
 

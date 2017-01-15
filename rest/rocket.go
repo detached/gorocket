@@ -1,6 +1,6 @@
 // This package provides a RocketChat client. It tries to use the rest api whenever possible and
 // ppd only for features that are exclusive to the web client.
-//   	client := Rocket{Protocol: "http", Host: "127.0.0.1", Port: "3000"}
+//   	client := Client{Protocol: "http", Host: "127.0.0.1", Port: "3000"}
 // You have to login to interact with a RocketChat server:
 //      credentials := UserCredentials{Email: "user@mail.com", Password: "secret"}
 //      client.Login(credentials)
@@ -13,10 +13,9 @@ import (
 	"io/ioutil"
 	"log"
 	"fmt"
-	"github.com/gopackage/ddp"
 )
 
-type Rocket struct {
+type Client struct {
 	Protocol string
 	Host  string
 	Port  string
@@ -25,8 +24,6 @@ type Rocket struct {
 	Debug bool
 
 	auth  *authInfo
-
-	ddpClient *ddp.Client
 }
 
 type authInfo struct {
@@ -40,38 +37,18 @@ type statusResponse struct {
 	Message string `json:"message"`
 }
 
-func (r *Rocket) getUrl() string {
-	return fmt.Sprintf("%v://%v:%v", r.Protocol, r.Host, r.Port)
+func (c *Client) getUrl() string {
+	return fmt.Sprintf("%v://%v:%v", c.Protocol, c.Host, c.Port)
 }
 
-func (r *Rocket) getDdpClient() (*ddp.Client, error) {
+func (c *Client) doRequest(request *http.Request, responseBody interface{}) error {
 
-	if r.ddpClient == nil {
-		r.ddpClient = ddp.NewClient(fmt.Sprintf("ws://%v:%v/websocket", r.Host, r.Port), "http://"+r.Host)
-
-		if err := r.ddpClient.Connect(); err != nil {
-			return nil, err
-		}
+	if c.auth != nil {
+		request.Header.Set("X-Auth-Token", c.auth.token)
+		request.Header.Set("X-User-Id", c.auth.id)
 	}
 
-	return r.ddpClient, nil
-}
-
-// Closes the ddp session, if any.
-func (r *Rocket) Close() {
-	if r.ddpClient != nil {
-		r.ddpClient.Close()
-	}
-}
-
-func (r *Rocket) doRequest(request *http.Request, responseBody interface{}) error {
-
-	if r.auth != nil {
-		request.Header.Set("X-Auth-Token", r.auth.token)
-		request.Header.Set("X-User-Id", r.auth.id)
-	}
-
-	if r.Debug {
+	if c.Debug {
 		log.Println(request)
 	}
 
@@ -84,7 +61,7 @@ func (r *Rocket) doRequest(request *http.Request, responseBody interface{}) erro
 	defer response.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(response.Body)
 
-	if r.Debug {
+	if c.Debug {
 		log.Println(string(bodyBytes))
 	}
 
@@ -98,4 +75,3 @@ func (r *Rocket) doRequest(request *http.Request, responseBody interface{}) erro
 
 	return json.Unmarshal(bodyBytes, responseBody)
 }
-
