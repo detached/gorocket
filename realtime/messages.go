@@ -4,7 +4,6 @@ import (
 	"github.com/detached/ddp"
 	"github.com/Jeffail/gabs"
 	"github.com/detached/gorocket/api"
-	"time"
 	"log"
 	"fmt"
 )
@@ -16,13 +15,21 @@ const (
 )
 
 // Send a message to a channel
-func (c *Client) SendMessage(channel *api.Channel, text string) (api.Message, error) {
+//
+// https://rocket.chat/docs/developer-guides/realtime-api/method-calls/send-message/
+func (c *Client) SendMessage(channel *api.Channel, text string) (*api.Message, error) {
 	m := api.Message{
-		Id:        getNextMessageId(),
+		Id:        c.newRandomId(),
 		ChannelId: channel.Id,
 		Text:      text}
-	_, err := c.ddp.Call("sendMessage", m)
-	return m, err
+
+	rawResponse, err := c.ddp.Call("sendMessage", m)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return getMessageFromData(rawResponse.(map[string]interface{})), nil
 }
 
 // Subscribes to the message updates of a channel
@@ -41,11 +48,12 @@ func (c *Client) SubscribeToMessageStream(channel *api.Channel) (chan api.Messag
 	return msgChannel, nil
 }
 
-func getNextMessageId() string {
-	return time.Now().Format("20170102150405")
+func getMessageFromData(data interface{}) *api.Message {
+	document, _ := gabs.Consume(data)
+	return getMessageFromDocument(document)
 }
 
-func fromEvent(update ddp.Update) []api.Message {
+func getMessagesFromUpdateEvent(update ddp.Update) []api.Message {
 	document, _ := gabs.Consume(update["args"])
 	args, err := document.Children()
 
@@ -57,18 +65,22 @@ func fromEvent(update ddp.Update) []api.Message {
 	messages := make([]api.Message, len(args))
 
 	for i, arg := range args {
-		messages[i] = api.Message{
-			Id: stringOrZero(arg.Path("_id").Data()),
-			ChannelId: stringOrZero(arg.Path("rid").Data()),
-			Text:                             stringOrZero(arg.Path("msg").Data()),
-			Timestamp:                        stringOrZero(arg.Path("ts.$date").Data()),
-			User:      api.User{
-				Id:       stringOrZero(arg.Path("u._id").Data()),
-				UserName: stringOrZero(arg.Path("u.username").Data())}}
+		messages[i] = *getMessageFromDocument(arg)
 	}
 
 	return messages
 }
+func getMessageFromDocument(arg *gabs.Container) *api.Message {
+	return &api.Message{
+		Id:        stringOrZero(arg.Path("_id").Data()),
+		ChannelId: stringOrZero(arg.Path("rid").Data()),
+		Text:      stringOrZero(arg.Path("msg").Data()),
+		Timestamp: stringOrZero(arg.Path("ts.$date").Data()),
+		User: api.User{
+			Id:       stringOrZero(arg.Path("u._id").Data()),
+			UserName: stringOrZero(arg.Path("u.username").Data())}}
+}
+
 func stringOrZero(i interface{}) string {
 	if i == nil {
 		return ""
@@ -91,7 +103,7 @@ type messageExtractor struct {
 
 func (u messageExtractor) CollectionUpdate(collection, operation, id string, doc ddp.Update) {
 	if operation == u.operation {
-		msgs := fromEvent(doc)
+		msgs := getMessagesFromUpdateEvent(doc)
 		for _, m := range msgs {
 			u.messageChannel <- m
 		}

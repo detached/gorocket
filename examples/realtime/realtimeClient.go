@@ -18,9 +18,9 @@ func main() {
 	messageChannel, _ := c.SubscribeToMessageStream(&general)
 
 	// Send some messages
-	fmt.Println(c.SendMessage(&general, "This"))
-	fmt.Println(c.SendMessage(&general, "is"))
-	fmt.Println(c.SendMessage(&general, "sparta!"))
+	c.SendMessage(&general, "This")
+	c.SendMessage(&general, "is")
+	c.SendMessage(&general, "sparta!")
 
 	// Get messages from channel
 	fmt.Println(<-messageChannel)
