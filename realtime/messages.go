@@ -26,7 +26,9 @@ func (c *Client) SendMessage(channel *api.Channel, text string) (api.Message, er
 }
 
 // Subscribes to the message updates of a channel
-// The channel has to be buffered and is not allowed to
+// Returns a buffered channel
+//
+// https://rocket.chat/docs/developer-guides/realtime-api/subscriptions/stream-room-messages/
 func (c *Client) SubscribeToMessageStream(channel *api.Channel) (chan api.Message, error) {
 
 	if err := c.ddp.Sub("stream-room-messages", channel.Id, send_added_event); err != nil {
