@@ -2,7 +2,7 @@ package realtime
 // Provides access to the Meteor ddp realtime API of Rocket.Chat
 
 import (
-	"github.com/gopackage/ddp"
+	"github.com/detached/ddp"
 	"fmt"
 )
 

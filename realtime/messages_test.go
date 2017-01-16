@@ -35,7 +35,6 @@ func TestClient_SubscribeToMessageStream_UnknownChannel(t *testing.T) {
 	channel := api.Channel{Id: "unknown"}
 
 	messageChannel, err := c.SubscribeToMessageStream(&channel)
-	fmt.Println("Subscribe done")
 
 	assert.NotNil(t, err, "Function didn't return error")
 	assert.Nil(t, messageChannel, "Function returned channel, but shouldn't")
