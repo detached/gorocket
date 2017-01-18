@@ -11,4 +11,4 @@ go get github.com/detached/gorocket/rest
 go get github.com/detached/gorocket/realtime
 ```
 
-For more information checkout the [godoc](https://godoc.org/github.com/detached/gorocket), the test files or the examples.
+For more information checkout the [rest-godoc](https://godoc.org/github.com/detached/gorocket/rest) and [realtime-godoc](https://godoc.org/github.com/detached/gorocket/realtime), the test files or the examples.
