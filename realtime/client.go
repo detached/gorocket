@@ -1,5 +1,5 @@
-package realtime
 // Provides access to the Meteor ddp realtime API of Rocket.Chat
+package realtime
 
 import (
 	"github.com/detached/ddp"

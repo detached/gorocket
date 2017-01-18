@@ -1,10 +1,5 @@
-// This package provides a RocketChat client. It tries to use the rest api whenever possible and
-// ppd only for features that are exclusive to the web client.
-//   	client := Client{Protocol: "http", Host: "127.0.0.1", Port: "3000"}
-// You have to login to interact with a RocketChat server:
-//      credentials := UserCredentials{Email: "user@mail.com", Password: "secret"}
-//      client.Login(credentials)
-package gorocket
+// This package provides a RocketChat rest client.
+package rest
 
 import (
 	"net/http"
@@ -35,6 +30,18 @@ type authInfo struct {
 type statusResponse struct {
 	Status string `json:"status"`
 	Message string `json:"message"`
+}
+
+func NewClient(host, port string, tls, debug bool) (*Client) {
+	var protocol string
+
+	if tls {
+		protocol = "https"
+	} else {
+		protocol = "http"
+	}
+
+	return &Client{Host: host, Port: port, Protocol: protocol, Debug: debug}
 }
 
 func (c *Client) getUrl() string {

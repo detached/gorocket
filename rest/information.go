@@ -1,4 +1,4 @@
-package gorocket
+package rest
 
 import (
 	"net/http"

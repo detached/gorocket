@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// Create a gorocket rest client
-	c := gorocket.Client{Protocol: "http", Host: "127.0.0.1", Port: "3000"}
+	c := rest.NewClient("127.0.0.1", "3000", false, false)
 
 	// No login needed to get the server versions
 	info, _ := c.GetServerInfo()
