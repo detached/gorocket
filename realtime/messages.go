@@ -1,7 +1,7 @@
 package realtime
 
 import (
-	"github.com/detached/ddp"
+	"github.com/gopackage/ddp"
 	"github.com/Jeffail/gabs"
 	"github.com/detached/gorocket/api"
 	"log"

@@ -2,7 +2,7 @@
 package realtime
 
 import (
-	"github.com/detached/ddp"
+	"github.com/gopackage/ddp"
 	"fmt"
 	"math/rand"
 	"time"
