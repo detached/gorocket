@@ -4,53 +4,11 @@
 
 RocketChat client for golang. Compatible to the rest API of version 0.48.2.
 
-This library makes use of [gopackage/ddp](https://github.com/gopackage/ddp) to register users without prior authentication.
-
-# Usage
-
-Fetch source
-```
-go get github.com/detached/gorocket
-```
-
-Use in your code
-```
-import "github.com/detached/gorocket"
-```
-
-###Initialize
-```
-rocket := Rocket{Protocol: "http", Host: "your-server.com", Port: "3000"}
-```
-
-###Register new user
-```
-rocket.RegisterUser(UserCredentials{Name:"userName", Email:"user@domain.com", Password:"userPassword"})
-```
-
-###Login user
-```
-rocket.Login(UserCredentials{Name:"userName", Email:"user@domain.com", Password:"userPassword"})
-```
-
-###Get public channels
-```
-channels, err := rocket.GetPublicChannels()
-```
-
-###Send message
-```
-rocket.Send(channel, "Text")
-```
-
-###Get messages
-```
-messages, err := rocket.GetMessages(channel, &Page{Count: 20})
-```
-or without pagination
+RocketChat provides a rest and a realtime interface. This library provides clients for both.
 
 ```
-messages, err := rocket.GetMessages(channel, nil)
+go get github.com/detached/gorocket/rest
+go get github.com/detached/gorocket/realtime
 ```
 
-For more information checkout the [godoc](https://godoc.org/github.com/detached/gorocket) and the test files.
+For more information checkout the [godoc](https://godoc.org/github.com/detached/gorocket), the test files or the examples.
