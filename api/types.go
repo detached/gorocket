@@ -72,3 +72,8 @@ type Info struct {
 		Version string `json:"version"`
 	} `json:"ImageMagick"`
 }
+
+type Setting struct {
+  Id    string `json:"_id"`
+  Value string `json:"value"`
+}
