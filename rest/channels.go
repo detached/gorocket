@@ -54,6 +54,15 @@ func (c *Client) JoinChannel(channel *api.Channel) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
+// Creates a channel with users.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/channels/create
+func (c *Client) CreateChannel(channel *api.Channel) error {
+	var body = fmt.Sprintf(`{ "name": "%s", "members": "%s" }`, channel.Name, channel.Members)
+	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/channels.create", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
+}
+
 // Leaves a channel. The id of the channel has to be not nil.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/leave
