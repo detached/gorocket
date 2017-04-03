@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"bytes"
+	"encoding/json"
 	"github.com/skilld-labs/gorocket/api"
 )
 
@@ -51,6 +52,19 @@ func (c *Client) GetJoinedChannels() ([]api.Channel, error) {
 func (c *Client) JoinChannel(channel *api.Channel) error {
 	var body = fmt.Sprintf(`{ "roomId": "%s" }`, channel.Id)
 	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/channels.join", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
+}
+
+// Creates a channel with users.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/channels/create
+func (c *Client) CreateChannel(channel *api.Channel) error {
+	u, err := json.Marshal(channel.UserNames)
+	if err != nil {
+		return err
+	}
+	var body = fmt.Sprintf(`{ "name": "%s", "members": "%s" }`, channel.Name, u)
+	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/channels.create", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
