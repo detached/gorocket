@@ -63,7 +63,7 @@ func (c *Client) CreateChannel(channel *api.Channel) error {
 	if err != nil {
 		return err
 	}
-	var body = fmt.Sprintf(`{ "name": "%s", "members": "%s" }`, channel.Name, u)
+	var body = fmt.Sprintf(`{ "name": "%s", "members": %s }`, channel.Name, u)
 	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/channels.create", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
