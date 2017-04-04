@@ -15,7 +15,7 @@ type channelsResponse struct {
 
 type groupsResponse struct {
 	Succes bool `json:"success"`
-	Groups []api.Group `json:"groups"`
+	Groups []api.Channel `json:"groups"`
 }
 
 type channelResponse struct {
