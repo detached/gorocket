@@ -57,7 +57,7 @@ func (c *Client) GetJoinedGroups() ([]api.Channel, error) {
 		return nil, err
 	}
 
-	return response.Groups, nil
+	return response.Channels, nil
 }
 
 // Joins a channel. The id of the channel has to be not nil.
