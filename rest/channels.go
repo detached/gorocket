@@ -13,6 +13,11 @@ type channelsResponse struct {
 	Channels []api.Channel `json:"channels"`
 }
 
+type groupsResponse struct {
+	Succes bool `json:"success"`
+	Groups []api.Group `json:"groups"`
+}
+
 type channelResponse struct {
 	Success bool `json:"success"`
 	Channel api.Channel `json:"channel"`
@@ -51,13 +56,13 @@ func (c *Client) GetJoinedChannels() ([]api.Channel, error) {
 // https://rocket.chat/docs/developer-guides/rest-api/groups/list
 func (c *Client) GetJoinedGroups() ([]api.Channel, error) {
 	request, _ := http.NewRequest("GET", c.getUrl() + "/api/v1/groups.list", nil)
-	response := new(channelsResponse)
+	response := new(groupsResponse)
 
 	if err := c.doRequest(request, response); err != nil {
 		return nil, err
 	}
 
-	return response.Channels, nil
+	return response.Groups, nil
 }
 
 // Joins a channel. The id of the channel has to be not nil.

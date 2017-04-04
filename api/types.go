@@ -15,6 +15,21 @@ type Channel struct {
 	SysMes       bool `json:"sysMes"`
 }
 
+type Group struct {
+	Id           string `json:"_id"`
+	Name         string `json:"name"`
+	MessageCount int `json:"msgs"`
+	UserNames    []string `json:"usernames"`
+
+	User         User `json:"u"`
+
+	ReadOnly     bool `json:"ro"`
+	Timestamp    string `json:"ts"`
+	T            string `json:"t"`
+	UpdatedAt    string `json:"_updatedAt"`
+	SysMes       bool `json:"sysMes"`
+}
+
 type User struct {
 	Id       string `json:"_id"`
 	UserName string `json:"username"`
