@@ -46,6 +46,20 @@ func (c *Client) GetJoinedChannels() ([]api.Channel, error) {
 	return response.Channels, nil
 }
 
+// Returns all groups that the user has joined.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/groups/list
+func (c *Client) GetJoinedGroups() ([]api.Channel, error) {
+	request, _ := http.NewRequest("GET", c.getUrl() + "/api/v1/groups.list", nil)
+	response := new(channelsResponse)
+
+	if err := c.doRequest(request, response); err != nil {
+		return nil, err
+	}
+
+	return response.Channels, nil
+}
+
 // Joins a channel. The id of the channel has to be not nil.
 //
 // This function is not supported by the current Client.Chat release version 0.48.2.
@@ -55,16 +69,25 @@ func (c *Client) JoinChannel(channel *api.Channel) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
-// Creates a channel with users.
+// Creates a group with users. The username(s) needs to be registered in RC.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/create
-func (c *Client) CreateChannel(channel *api.Channel) error {
+func (c *Client) CreateGroup(channel *api.Channel) error {
 	u, err := json.Marshal(channel.UserNames)
 	if err != nil {
 		return err
 	}
 	var body = fmt.Sprintf(`{ "name": "%s", "members": %s }`, channel.Name, u)
-	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/channels.create", bytes.NewBufferString(body))
+	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.create", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
+}
+
+// Archives a channel. The roomId has to be set.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/channels/archive
+func (c *Client) ArchiveGroup(channel *api.Channel) error {
+	var body = fmt.Sprintf(`{ "roomId": "%s" }`, channel.Id)
+	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.archive", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
