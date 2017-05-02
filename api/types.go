@@ -31,8 +31,27 @@ type Group struct {
 }
 
 type User struct {
-	Id       string `json:"_id"`
-	UserName string `json:"username"`
+	Id                    string            `json:"_id,omitempty"`
+	CreatedAt             string            `json:"createdAt,omitempty"`
+	Bcrypt                string            `json:"bcrypt,omitempty"`
+	Name                  string            `json:"name"`
+	UserName              string            `json:"username,omitempty"`
+	Emails                []struct {
+		Address  string `json:"adress,omitempty"`
+		Verified bool   `json:"verified,omitempty"`
+	}                                       `json:"emails,omitempty"`
+	UpdatedAt             string            `json:"updatedAt,omitempty"`
+	Type                  string            `json:"type,omitempty"`
+	Status                string            `json:"status,omitempty"`
+	Email                 string            `json:"email,omitempty"`
+	Password              string            `json:"password"`
+	Active                bool              `json:"active,omitempty"`
+	Roles                 []string          `json:"roles,omitempty"`
+	JoinDefaultChannels   bool              `json:"joinDefaultChannels,omitempty"`
+	RequirePasswordChange bool              `json:"requirePasswordChange,omitempty"`
+	SendWelcomeEmail      bool              `json:"sendWelcomeEmail,omitempty"`
+	Verified              bool              `json:"verified,omitempty"`
+	CustomFields          map[string]string `json:"customFields,omitempty"`
 }
 
 type UserCredentials struct {
@@ -89,6 +108,6 @@ type Info struct {
 }
 
 type Setting struct {
-  Id    string `json:"_id"`
-  Value string `json:"value"`
+	Id    string `json:"_id"`
+	Value string `json:"value"`
 }

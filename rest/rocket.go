@@ -79,6 +79,5 @@ func (c *Client) doRequest(request *http.Request, responseBody interface{}) erro
 	if err != nil {
 		return err
 	}
-
 	return json.Unmarshal(bodyBytes, responseBody)
 }
