@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"bytes"
-	"encoding/json"
 	"github.com/skilld-labs/gorocket/api"
 )
 
@@ -120,7 +119,7 @@ func (c *Client) GetChannelInfo(channel *api.Channel) (*api.Channel, error) {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/groups/invite
 func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
-	var body = fmt.Spintf(`{ "roomId": "%s", "userId": "%s"}`, channel.Id, user.Id)
-	request, _ := http.NewRequest("POST", c.getUrl + "/api/v1/groups.invite", bytes.NewBufferString(body))
+	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s"}`, channel.Id, user.Id)
+	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.invite", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
