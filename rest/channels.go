@@ -74,15 +74,11 @@ func (c *Client) JoinChannel(channel *api.Channel) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
-// Creates a group with users. The username(s) needs to be registered in RC.
+// Creates a group.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/create
 func (c *Client) CreateGroup(channel *api.Channel) error {
-	u, err := json.Marshal(channel.UserNames)
-	if err != nil {
-		return err
-	}
-	var body = fmt.Sprintf(`{ "name": "%s", "members": %s }`, channel.Name, u)
+	var body = fmt.Sprintf(`{ "name": "%s", "members": "[]" }`, channel.Name)
 	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.create", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
@@ -118,4 +114,13 @@ func (c *Client) GetChannelInfo(channel *api.Channel) (*api.Channel, error) {
 	}
 
 	return &response.Channel, nil
+}
+
+// Invites a user to a channel
+//
+// https://rocket.chat/docs/developer-guides/rest-api/groups/invite
+func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
+	var body = fmt.Spintf(`{ "roomId": "%s", "userId": "%s"}`, channel.Id, user.Id)
+	request, _ := http.NewRequest("POST", c.getUrl + "/api/v1/groups.invite", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
 }
