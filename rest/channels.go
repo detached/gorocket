@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"bytes"
+	"encoding/json"
 	"github.com/skilld-labs/gorocket/api"
 )
 
@@ -122,4 +123,14 @@ func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
 	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s"}`, channel.Id, user.Id)
 	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.invite", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
+}
+
+func (c *Client) GetGroups(query map[string]string) (*groupsResponse, error) {
+	groups := new(groupsResponse)
+	queryJson, err := json.Marshal(query)
+	q := url.QueryEscape(string(queryJson))
+	request, _ := http.NewRequest("GET", c.getUrl() + "/api/v1/groups.list?query=" + q, nil)
+
+	err = c.doRequest(request, groups)
+	return groups, err
 }
