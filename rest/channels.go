@@ -130,7 +130,7 @@ func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
-func (c *Client) GetGroup(roomName string) (*groupResponse, error) {
+func (c *Client) GetGroupByName(roomName string) (*groupResponse, error) {
 	group := new(groupResponse)
 	queryJson, err := json.Marshal(roomName)
 	q := url.QueryEscape(string(queryJson))
