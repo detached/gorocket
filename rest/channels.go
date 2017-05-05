@@ -110,7 +110,7 @@ func (c *Client) LeaveChannel(channel *api.Channel) error {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/info
 func (c *Client) GetChannelInfo(channel *api.Channel) (*api.Channel, error) {
-	var url = fmt.Sprintf("%s/api/v1/channels.info?roomId=%s", c.getUrl(), channel.Id)
+	var url = fmt.Sprintf("%s/api/v1/channels.info?roomId=%s&roomName=%s", c.getUrl(), channel.Id, channel.Name)
 	request, _ := http.NewRequest("GET", url, nil)
 	response := new(channelResponse)
 
@@ -130,12 +130,14 @@ func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
-func (c *Client) GetGroupByName(roomName string) (*groupResponse, error) {
-	group := new(groupResponse)
-	queryJson, err := json.Marshal(roomName)
-	q := url.QueryEscape(string(queryJson))
-	request, _ := http.NewRequest("GET", c.getUrl() + "/api/v1/groups.info?roomName=" + q, nil)
+func (c *Client) GetGroupInfo(group *api.Channel) (*api.Channel, error) {
+	var url = fmt.Sprintf("%s/api/v1/groups.info?roomId=%s&roomName=%s", c.getUrl(), group.Id, group.Name)
+	request, _ := http.NewRequest("GET", url, nil)
+	response := new(groupResponse)
 
-	err = c.doRequest(request, group)
-	return group, err
+	if err := c.doRequest(request, response); err != nil {
+		return nil, err
+	}
+
+	return &response.Channel, nil
 }
