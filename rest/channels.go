@@ -25,7 +25,7 @@ type channelResponse struct {
 
 type groupResponse struct {
 	Success bool `json:"success"`
-	Group   []api.Channel `json:"group"`
+	Group   api.Channel `json:"group"`
 }
 
 // Returns all channels that can be seen by the logged in user.
