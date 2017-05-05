@@ -151,5 +151,5 @@ func (c *Client) GetGroupInfo(group *api.Channel) (*api.Channel, error) {
 		return nil, err
 	}
 
-	return &response.Channel, nil
+	return &response.Group, nil
 }
