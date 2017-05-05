@@ -23,6 +23,11 @@ type channelResponse struct {
 	Channel api.Channel `json:"channel"`
 }
 
+type groupResponse struct {
+	Success bool `json:"success"`
+	Group   []api.Channel `json:"group"`
+}
+
 // Returns all channels that can be seen by the logged in user.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/list
@@ -125,12 +130,12 @@ func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
-func (c *Client) GetGroups(query map[string]string) (*groupsResponse, error) {
-	groups := new(groupsResponse)
-	queryJson, err := json.Marshal(query)
+func (c *Client) GetGroup(roomName string) (*groupResponse, error) {
+	group := new(groupResponse)
+	queryJson, err := json.Marshal(roomName)
 	q := url.QueryEscape(string(queryJson))
-	request, _ := http.NewRequest("GET", c.getUrl() + "/api/v1/groups.list?query=" + q, nil)
+	request, _ := http.NewRequest("GET", c.getUrl() + "/api/v1/groups.info?roomName=" + q, nil)
 
-	err = c.doRequest(request, groups)
-	return groups, err
+	err = c.doRequest(request, group)
+	return group, err
 }
