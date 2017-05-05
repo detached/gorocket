@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"bytes"
+	"encoding/json"
 	"github.com/skilld-labs/gorocket/api"
 )
 
@@ -20,6 +21,11 @@ type groupsResponse struct {
 type channelResponse struct {
 	Success bool `json:"success"`
 	Channel api.Channel `json:"channel"`
+}
+
+type groupResponse struct {
+	Success bool `json:"success"`
+	Group   api.Channel `json:"group"`
 }
 
 // Returns all channels that can be seen by the logged in user.
@@ -100,11 +106,23 @@ func (c *Client) LeaveChannel(channel *api.Channel) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
+func (c *Client) KickFromGroup(group *api.Channel, user *api.User) error {
+	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s" }`, group.Id, user.Id)
+	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.kick", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
+}
+
+func (c *Client) KickFromChannel(channel *api.Channel, user *api.User) error {
+	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s" }`, channel.Id, user.Id)
+	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/channels.kick", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
+}
+
 // Get information about a channel. That might be useful to update the usernames.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/info
 func (c *Client) GetChannelInfo(channel *api.Channel) (*api.Channel, error) {
-	var url = fmt.Sprintf("%s/api/v1/channels.info?roomId=%s", c.getUrl(), channel.Id)
+	var url = fmt.Sprintf("%s/api/v1/channels.info?roomId=%s&roomName=%s", c.getUrl(), channel.Id, channel.Name)
 	request, _ := http.NewRequest("GET", url, nil)
 	response := new(channelResponse)
 
@@ -122,4 +140,16 @@ func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
 	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s"}`, channel.Id, user.Id)
 	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.invite", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
+}
+
+func (c *Client) GetGroupInfo(group *api.Channel) (*api.Channel, error) {
+	var url = fmt.Sprintf("%s/api/v1/groups.info?roomId=%s&roomName=%s", c.getUrl(), group.Id, group.Name)
+	request, _ := http.NewRequest("GET", url, nil)
+	response := new(groupResponse)
+
+	if err := c.doRequest(request, response); err != nil {
+		return nil, err
+	}
+
+	return &response.Group, nil
 }
