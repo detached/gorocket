@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"bytes"
-	"encoding/json"
 	"github.com/skilld-labs/gorocket/api"
 )
 
