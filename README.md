@@ -4,6 +4,9 @@
 
 RocketChat client for golang. Compatible to the rest API of version 0.48.2.
 
+The tests are failing because the library is not fully compatible to the newest version of RocketChat.
+I will not update the lib because I am not using RocketChat any more.
+
 RocketChat provides a rest and a realtime interface. This library provides clients for both.
 
 ```
