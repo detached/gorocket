@@ -9,6 +9,8 @@ import (
 func main() {
 	// Create new realtime client
 	c, _ := realtime.NewClient("127.0.0.1", "3000", false)
+	// close the client 
+	defer c.Close()
 
 	// Login an existing user
 	c.Login(&api.UserCredentials{Email: "reatimeTest@mail.com", Name: "realtime", Password: "realtime"})
@@ -27,6 +29,5 @@ func main() {
 	fmt.Println(<-messageChannel)
 	fmt.Println(<-messageChannel)
 
-	// Don't forget to close the client
-	c.Close()
+	
 }
