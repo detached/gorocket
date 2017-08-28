@@ -4,14 +4,14 @@ import (
   "fmt"
   "net/http"
   "bytes"
-  "github.com/skilld-labs/gorocket/api"
+  "github.com/mickymiek/gorocket/api"
 )
 
 type settingResponse struct {
   Success  bool `json:"success"`
 }
 
-func (c *Client) Setting(s *api.Setting) error{
+func (c *Client) Setting(s *api.Setting) error {
   var body string
   if s.Value == `true` || s.Value == `false` {
     body = fmt.Sprintf(`{"value": %s}`, s.Value)

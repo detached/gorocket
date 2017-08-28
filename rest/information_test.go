@@ -3,7 +3,7 @@ package rest
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"github.com/skilld-labs/gorocket/common_testing"
+	"github.com/mickymiek/gorocket/common_testing"
 )
 
 func TestRocket_GetServerInfo(t *testing.T) {
