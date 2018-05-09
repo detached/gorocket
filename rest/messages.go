@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"net/http"
 	"html"
-	"github.com/mickymiek/gorocket/api"
+	"github.com/skilld-labs/gorocket/api"
 )
 
 type messagesResponse struct {

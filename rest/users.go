@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/mickymiek/gorocket/api"
+	"github.com/skilld-labs/gorocket/api"
 	"net/http"
 	"net/url"
 )

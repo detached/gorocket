@@ -3,9 +3,9 @@ package rest
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"github.com/mickymiek/gorocket/realtime"
-	"github.com/mickymiek/gorocket/common_testing"
-	"github.com/mickymiek/gorocket/api"
+	"github.com/skilld-labs/gorocket/realtime"
+	"github.com/skilld-labs/gorocket/common_testing"
+	"github.com/skilld-labs/gorocket/api"
 )
 
 var (
