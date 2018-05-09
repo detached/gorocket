@@ -2,23 +2,23 @@
 package rest
 
 import (
-	"net/http"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
-	"fmt"
+	"net/http"
 )
 
 type Client struct {
 	Protocol string
-	Host  string
-	Port  string
+	Host     string
+	Port     string
 
 	// Use this switch to see all network communication.
 	Debug bool
 
-	auth  *authInfo
+	auth *authInfo
 }
 
 type authInfo struct {
@@ -28,11 +28,11 @@ type authInfo struct {
 
 // The base for the most of the json responses
 type statusResponse struct {
-	Status string `json:"status"`
+	Status  string `json:"status"`
 	Message string `json:"message"`
 }
 
-func NewClient(host, port string, tls, debug bool) (*Client) {
+func NewClient(host, port string, tls, debug bool) *Client {
 	var protocol string
 
 	if tls {
