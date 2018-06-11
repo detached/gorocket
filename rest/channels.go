@@ -122,18 +122,6 @@ func (c *Client) KickFromChannel(channel *api.Channel, user *api.User) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
-func (c *Client) KickFromGroup(group *api.Channel, user *api.User) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s" }`, group.Id, user.Id)
-	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/groups.kick", bytes.NewBufferString(body))
-	return c.doRequest(request, new(statusResponse))
-}
-
-func (c *Client) KickFromChannel(channel *api.Channel, user *api.User) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s" }`, channel.Id, user.Id)
-	request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/channels.kick", bytes.NewBufferString(body))
-	return c.doRequest(request, new(statusResponse))
-}
-
 // Get information about a channel. That might be useful to update the usernames.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/info
