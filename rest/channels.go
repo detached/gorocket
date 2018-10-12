@@ -3,8 +3,9 @@ package rest
 import (
 	"bytes"
 	"fmt"
-	"github.com/skilld-labs/gorocket/api"
 	"net/http"
+
+	"github.com/skilld-labs/gorocket/api"
 )
 
 type channelsResponse struct {
@@ -98,6 +99,15 @@ func (c *Client) CreateGroup(channel *api.Channel) error {
 func (c *Client) ArchiveGroup(channel *api.Channel) error {
 	var body = fmt.Sprintf(`{ "roomId": "%s" }`, channel.Id)
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.archive", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
+}
+
+// Unarchives a group. The roomId has to be set.
+//
+// https://rocket.chat/docs/developer-guides/rest-api/channels/unarchive
+func (c *Client) UnarchiveGroup(channel *api.Channel) error {
+	var body = fmt.Sprintf(`{ "roomId": "%s" }`, channel.Id)
+	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.unarchive", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
