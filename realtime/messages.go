@@ -1,11 +1,11 @@
 package realtime
 
 import (
-	"github.com/gopackage/ddp"
+	"fmt"
+
 	"github.com/Jeffail/gabs"
 	"github.com/detached/gorocket/api"
-	"log"
-	"fmt"
+	"github.com/gopackage/ddp"
 )
 
 const (
@@ -49,18 +49,13 @@ func (c *Client) SubscribeToMessageStream(channel *api.Channel) (chan api.Messag
 }
 
 func getMessageFromData(data interface{}) *api.Message {
-	document, _ := gabs.Consume(data)
+	document := gabs.Wrap(data)
 	return getMessageFromDocument(document)
 }
 
 func getMessagesFromUpdateEvent(update ddp.Update) []api.Message {
-	document, _ := gabs.Consume(update["args"])
-	args, err := document.Children()
-
-	if err != nil {
-		log.Printf("Event arguments are in an unexpected format: %v", err)
-		return make([]api.Message, 0)
-	}
+	document := gabs.Wrap(update["args"])
+	args := document.Children()
 
 	messages := make([]api.Message, len(args))
 
