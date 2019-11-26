@@ -194,3 +194,14 @@ func (c *Client) GetGroupMembers(group *api.Group) (*[]api.User, error) {
 
 	return &response.Members, nil
 }
+
+func (c *Client) DeleteGroup(group *api.Group) error {
+	var body string
+	if group.Id != "" {
+		body = fmt.Sprintf(`{ "roomId": "%s" }`, group.Id)
+	} else {
+		body = fmt.Sprintf(`{ "roomName": "%s" }`, group.Name)
+	}
+	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.delete", bytes.NewBufferString(body))
+	return c.doRequest(request, new(statusResponse))
+}
