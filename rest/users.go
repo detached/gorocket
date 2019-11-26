@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/skilld-labs/gorocket/api"
 	"net/http"
 	"net/url"
+
+	"github.com/skilld-labs/gorocket/api"
 )
 
 type logoutResponse struct {
@@ -113,6 +114,20 @@ func (c *Client) GetUsers(query map[string]string) (*usersResponse, error) {
 
 	err = c.doRequest(request, users)
 	return users, err
+}
+
+func (c *Client) GetUserInfo(user *api.User) (*api.User, error) {
+	url := c.getUrl() + "/api/v1/users.info?"
+	if user.Id != "" {
+		url += "userId=" + user.Id
+	} else {
+		url += "username=" + user.UserName
+	}
+	request, _ := http.NewRequest("GET", url, nil)
+	response := new(userResponse)
+
+	err := c.doRequest(request, user)
+	return &response.User, err
 }
 
 func (c *Client) SetPreferences(id string, preferences *api.UserPreferences) error {

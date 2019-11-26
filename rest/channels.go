@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -24,8 +25,8 @@ type channelResponse struct {
 }
 
 type groupResponse struct {
-	Success bool        `json:"success"`
-	Group   api.Channel `json:"group"`
+	Success bool      `json:"success"`
+	Group   api.Group `json:"group"`
 }
 
 type groupUsersReponse struct {
@@ -87,8 +88,12 @@ func (c *Client) JoinChannel(channel *api.Channel) error {
 // Creates a group.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/create
-func (c *Client) CreateGroup(channel *api.Channel) error {
-	var body = fmt.Sprintf(`{ "name": "%s" }`, channel.Name)
+func (c *Client) CreateGroup(group *api.Group) error {
+	members, err := json.Marshal(group.UserNames)
+	if err != nil {
+		return err
+	}
+	var body = fmt.Sprintf(`{ "name": "%s", "members": %s, "readOnly": %v }`, group.Name, string(members), group.ReadOnly)
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.create", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
@@ -120,7 +125,7 @@ func (c *Client) LeaveChannel(channel *api.Channel) error {
 	return c.doRequest(request, new(statusResponse))
 }
 
-func (c *Client) KickFromGroup(group *api.Channel, user *api.User) error {
+func (c *Client) KickFromGroup(group *api.Group, user *api.User) error {
 	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s" }`, group.Id, user.Id)
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.kick", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
@@ -150,14 +155,19 @@ func (c *Client) GetChannelInfo(channel *api.Channel) (*api.Channel, error) {
 // Invites a user to a channel
 //
 // https://rocket.chat/docs/developer-guides/rest-api/groups/invite
-func (c *Client) InviteUser(channel *api.Channel, user *api.User) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s"}`, channel.Id, user.Id)
+func (c *Client) InviteUser(group *api.Group, user *api.User) error {
+	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s"}`, group.Id, user.Id)
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.invite", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
-func (c *Client) GetGroupInfo(group *api.Channel) (*api.Channel, error) {
-	var url = fmt.Sprintf("%s/api/v1/groups.info?roomId=%s&roomName=%s", c.getUrl(), group.Id, group.Name)
+func (c *Client) GetGroupInfo(group *api.Group) (*api.Group, error) {
+	url := c.getUrl() + "/api/v1/groups.info?"
+	if group.Id != "" {
+		url += "roomId=" + group.Id
+	} else {
+		url += "roomName=" + group.Name
+	}
 	request, _ := http.NewRequest("GET", url, nil)
 	response := new(groupResponse)
 
@@ -168,8 +178,13 @@ func (c *Client) GetGroupInfo(group *api.Channel) (*api.Channel, error) {
 	return &response.Group, nil
 }
 
-func (c *Client) GetGroupMembers(group *api.Channel) (*[]api.User, error) {
-	var url = fmt.Sprintf("%s/api/v1/groups.members?roomId=%s&roomName=%s", c.getUrl(), group.Id, group.Name)
+func (c *Client) GetGroupMembers(group *api.Group) (*[]api.User, error) {
+	url := c.getUrl() + "/api/v1/groups.members?"
+	if group.Id != "" {
+		url += "roomId=" + group.Id
+	} else {
+		url += "roomName=" + group.Name
+	}
 	request, _ := http.NewRequest("GET", url, nil)
 	response := new(groupUsersReponse)
 
