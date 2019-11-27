@@ -20,8 +20,8 @@ type Group struct {
 	Id           string   `json:"_id"`
 	Name         string   `json:"name"`
 	MessageCount int      `json:"msgs"`
-	UserNames    []string `json:"usernames"`
 	UsersCount   int      `json:"usersCount"`
+	UserNames    []string `json:"usernames"`
 
 	User User `json:"u"`
 
@@ -29,6 +29,7 @@ type Group struct {
 	Timestamp string `json:"ts"`
 	T         string `json:"t"`
 	UpdatedAt string `json:"_updatedAt"`
+	Archived  bool   `json:"archived"`
 	SysMes    bool   `json:"sysMes"`
 }
 
