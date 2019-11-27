@@ -101,8 +101,8 @@ func (c *Client) CreateGroup(group *api.Group) error {
 // Archives a channel. The roomId has to be set.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/archive
-func (c *Client) ArchiveGroup(channel *api.Channel) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s" }`, channel.Id)
+func (c *Client) ArchiveGroup(group *api.Group) error {
+	var body = fmt.Sprintf(`{ "roomId": "%s" }`, group.Id)
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.archive", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
@@ -110,8 +110,8 @@ func (c *Client) ArchiveGroup(channel *api.Channel) error {
 // Unarchives a group. The roomId has to be set.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/unarchive
-func (c *Client) UnarchiveGroup(channel *api.Channel) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s" }`, channel.Id)
+func (c *Client) UnarchiveGroup(group *api.Group) error {
+	var body = fmt.Sprintf(`{ "roomId": "%s" }`, group.Id)
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.unarchive", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
