@@ -21,6 +21,7 @@ type Group struct {
 	Name         string   `json:"name"`
 	MessageCount int      `json:"msgs"`
 	UserNames    []string `json:"usernames"`
+	UsersCount   int      `json:"usersCount"`
 
 	User User `json:"u"`
 
