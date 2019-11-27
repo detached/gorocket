@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 type Client struct {
@@ -59,6 +61,7 @@ func (c *Client) doRequest(request *http.Request, responseBody interface{}) erro
 		log.Println(request)
 	}
 
+	spew.Dump(request)
 	response, err := http.DefaultClient.Do(request)
 
 	if err != nil {
