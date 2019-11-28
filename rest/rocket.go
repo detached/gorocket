@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 )
@@ -61,8 +62,10 @@ func (c *Client) doRequest(request *http.Request, responseBody interface{}) erro
 		log.Println(request)
 	}
 
-	spew.Dump(request)
 	response, err := http.DefaultClient.Do(request)
+	if strings.Contains(request.URL.Path, "groups.list") {
+		spew.Dump(response)
+	}
 
 	if err != nil {
 		return err
