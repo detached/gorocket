@@ -205,3 +205,13 @@ func (c *Client) DeleteGroup(group *api.Group) error {
 	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.delete", bytes.NewBufferString(body))
 	return c.doRequest(request, new(statusResponse))
 }
+
+func (c *Client) RenameGroup(group *api.Group) (*api.Group, error) {
+	body := fmt.Sprintf(`{ "roomId": "%s", "name": "%s"}`, group.Id, group.Name)
+	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.rename", bytes.NewBufferString(body))
+	response := new(groupResponse)
+	if err := c.doRequest(request, response); err != nil {
+		return nil, err
+	}
+	return &response.Group, nil
+}

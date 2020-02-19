@@ -126,8 +126,10 @@ func (c *Client) GetUserInfo(user *api.User) (*api.User, error) {
 	request, _ := http.NewRequest("GET", url, nil)
 	response := new(userResponse)
 
-	err := c.doRequest(request, user)
-	return &response.User, err
+	if err := c.doRequest(request, response); err != nil {
+		return nil, err
+	}
+	return &response.User, nil
 }
 
 func (c *Client) SetPreferences(id string, preferences *api.UserPreferences) error {
