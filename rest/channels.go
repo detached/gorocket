@@ -15,8 +15,8 @@ type channelsResponse struct {
 }
 
 type groupsResponse struct {
-	Succes bool          `json:"success"`
-	Groups []api.Channel `json:"groups"`
+	Succes bool        `json:"success"`
+	Groups []api.Group `json:"groups"`
 }
 
 type channelResponse struct {
@@ -65,7 +65,7 @@ func (c *Client) GetJoinedChannels() ([]api.Channel, error) {
 // Returns all groups that the user has joined.
 //
 // https://rocket.chat/docs/developer-guides/rest-api/groups/list
-func (c *Client) GetJoinedGroups() ([]api.Channel, error) {
+func (c *Client) GetJoinedGroups() ([]api.Group, error) {
 	request, _ := http.NewRequest("GET", c.getUrl()+"/api/v1/groups.list", nil)
 	response := new(groupsResponse)
 
