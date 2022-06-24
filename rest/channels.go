@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/skilld-labs/gorocket/api"
+	"github.com/davidferlay/gorocket/api"
 )
 
 type channelsResponse struct {
