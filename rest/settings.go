@@ -1,24 +1,27 @@
 package rest
 
 import (
-  "fmt"
-  "net/http"
-  "bytes"
-  "github.com/davidferlay/gorocket/api"
+	"bytes"
+	"encoding/json"
+	"net/http"
+
+	"github.com/davidferlay/gorocket/api"
 )
 
 type settingResponse struct {
-  Success  bool `json:"success"`
+	Success bool `json:"success"`
 }
 
 func (c *Client) Setting(s *api.Setting) error {
-  var body string
-  if s.Value == `true` || s.Value == `false` {
-    body = fmt.Sprintf(`{"value": %s}`, s.Value)
-  } else {
-    body = fmt.Sprintf(`{"value": "%s"}`, s.Value)
-  }
-  request, _ := http.NewRequest("POST", c.getUrl() + "/api/v1/settings/" + s.Id, bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		Value string `json:"value"`
+	}{
+		Value: s.Value,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/settings/"+s.Id, bytes.NewReader(body))
 
-  return c.doRequest(request, &settingResponse{})
+	return c.doRequest(request, &settingResponse{})
 }

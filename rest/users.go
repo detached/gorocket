@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 
@@ -45,10 +44,17 @@ type preferencesResponse struct {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/authentication/login
 func (c *Client) Login(credentials api.UserCredentials) error {
-	data := url.Values{"user": {credentials.Email}, "password": {credentials.Password}}
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/login", bytes.NewBufferString(data.Encode()))
-	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
+	body, err := json.Marshal(struct {
+		User     string `json:"user"`
+		Password string `json:"password"`
+	}{
+		User:     credentials.Email,
+		Password: credentials.Password,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/login", bytes.NewReader(body))
 	response := new(logonResponse)
 
 	if err := c.doRequest(request, response); err != nil {
@@ -72,7 +78,7 @@ func (c *Client) Logout() (string, error) {
 		return "Was not logged in", nil
 	}
 
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/logout", nil)
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/logout", nil)
 
 	response := new(logoutResponse)
 
@@ -93,14 +99,22 @@ func (c *Client) Create(user *api.User) (*userResponse, error) {
 	if err != nil {
 		return &userResponse{}, err
 	}
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/users.create", bytes.NewBufferString(string(body)))
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/users.create", bytes.NewReader(body))
 
 	err = c.doRequest(request, u)
 	return u, err
 }
 
 func (c *Client) Delete(id string) error {
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/users.delete", bytes.NewBufferString(fmt.Sprintf(`{"userId": "%s"}`, id)))
+	body, err := json.Marshal(struct {
+		UserID string `json:"userId"`
+	}{
+		UserID: id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/users.delete", bytes.NewReader(body))
 
 	return c.doRequest(request, &userResponse{})
 }
@@ -133,11 +147,17 @@ func (c *Client) GetUserInfo(user *api.User) (*api.User, error) {
 }
 
 func (c *Client) SetPreferences(id string, preferences *api.UserPreferences) error {
-	body, err := json.Marshal(preferences)
+	body, err := json.Marshal(struct {
+		UserID string               `json:"userId"`
+		Data   *api.UserPreferences `json:"data"`
+	}{
+		UserID: id,
+		Data:   preferences,
+	})
 	if err != nil {
 		return err
 	}
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/users.setPreferences", bytes.NewBufferString(fmt.Sprintf(`{"userId": "%s", "data": %s}`, id, string(body))))
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/users.setPreferences", bytes.NewReader(body))
 
 	return c.doRequest(request, &preferencesResponse{})
 }

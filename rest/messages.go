@@ -1,22 +1,24 @@
 package rest
 
 import (
-	"fmt"
 	"bytes"
-	"net/http"
+	"encoding/json"
+	"fmt"
 	"html"
+	"net/http"
+
 	"github.com/davidferlay/gorocket/api"
 )
 
 type messagesResponse struct {
 	statusResponse
-	ChannelName string `json:"channel"`
+	ChannelName string        `json:"channel"`
 	Messages    []api.Message `json:"messages"`
 }
 
 type messageResponse struct {
 	statusResponse
-	ChannelName string `json:"channel"`
+	ChannelName string      `json:"channel"`
 	Message     api.Message `json:"message"`
 }
 
@@ -29,8 +31,18 @@ type Page struct {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/chat/postmessage
 func (c *Client) Send(channel *api.Channel, msg string) error {
-	body := fmt.Sprintf(`{ "channel": "%s", "text": "%s"}`, channel.Name, html.EscapeString(msg))
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/chat.postMessage", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		Channel string `json:"channel"`
+		Text    string `json:"text"`
+	}{
+		Channel: channel.Name,
+		Text:    html.EscapeString(msg),
+	})
+	if err != nil {
+		return err
+	}
+
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/chat.postMessage", bytes.NewReader(body))
 
 	response := new(messageResponse)
 

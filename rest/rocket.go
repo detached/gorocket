@@ -59,6 +59,10 @@ func (c *Client) doRequest(request *http.Request, responseBody interface{}) erro
 		log.Println(request)
 	}
 
+	if request.Method == http.MethodPost && request.Body != nil {
+		request.Header.Add("Content-Type", "application/json")
+	}
+
 	response, err := http.DefaultClient.Do(request)
 
 	if err != nil {

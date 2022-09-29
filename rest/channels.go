@@ -80,8 +80,15 @@ func (c *Client) GetJoinedGroups() ([]api.Group, error) {
 //
 // This function is not supported by the current Client.Chat release version 0.48.2.
 func (c *Client) JoinChannel(channel *api.Channel) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s" }`, channel.Id)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/channels.join", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId"`
+	}{
+		RoomID: channel.Id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/channels.join", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
@@ -89,12 +96,19 @@ func (c *Client) JoinChannel(channel *api.Channel) error {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/create
 func (c *Client) CreateGroup(group *api.Group) error {
-	members, err := json.Marshal(group.UserNames)
+	body, err := json.Marshal(struct {
+		Name     string   `json:"name"`
+		Members  []string `json:"members"`
+		ReadOnly bool     `json:"readOnly"`
+	}{
+		Name:     group.Name,
+		Members:  group.UserNames,
+		ReadOnly: group.ReadOnly,
+	})
 	if err != nil {
 		return err
 	}
-	var body = fmt.Sprintf(`{ "name": "%s", "members": %s, "readOnly": %v }`, group.Name, string(members), group.ReadOnly)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.create", bytes.NewBufferString(body))
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/groups.create", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
@@ -102,8 +116,15 @@ func (c *Client) CreateGroup(group *api.Group) error {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/archive
 func (c *Client) ArchiveGroup(group *api.Group) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s" }`, group.Id)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.archive", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId"`
+	}{
+		RoomID: group.Id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/groups.archive", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
@@ -111,8 +132,15 @@ func (c *Client) ArchiveGroup(group *api.Group) error {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/unarchive
 func (c *Client) UnarchiveGroup(group *api.Group) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s" }`, group.Id)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.unarchive", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId"`
+	}{
+		RoomID: group.Id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/groups.unarchive", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
@@ -120,20 +148,45 @@ func (c *Client) UnarchiveGroup(group *api.Group) error {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/channels/leave
 func (c *Client) LeaveChannel(channel *api.Channel) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s"}`, channel.Id)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/channels.leave", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId"`
+	}{
+		RoomID: channel.Id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/channels.leave", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
 func (c *Client) KickFromGroup(group *api.Group, user *api.User) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s" }`, group.Id, user.Id)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.kick", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId"`
+		UserID string `json:"userId"`
+	}{
+		RoomID: group.Id,
+		UserID: user.Id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/groups.kick", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
 func (c *Client) KickFromChannel(channel *api.Channel, user *api.User) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s" }`, channel.Id, user.Id)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/channels.kick", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId"`
+		UserID string `json:"userId"`
+	}{
+		RoomID: channel.Id,
+		UserID: user.Id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/channels.kick", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
@@ -156,8 +209,17 @@ func (c *Client) GetChannelInfo(channel *api.Channel) (*api.Channel, error) {
 //
 // https://rocket.chat/docs/developer-guides/rest-api/groups/invite
 func (c *Client) InviteUser(group *api.Group, user *api.User) error {
-	var body = fmt.Sprintf(`{ "roomId": "%s", "userId": "%s"}`, group.Id, user.Id)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.invite", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId"`
+		UserID string `json:"userId"`
+	}{
+		RoomID: group.Id,
+		UserID: user.Id,
+	})
+	if err != nil {
+		return err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/groups.invite", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
@@ -196,19 +258,32 @@ func (c *Client) GetGroupMembers(group *api.Group) (*[]api.User, error) {
 }
 
 func (c *Client) DeleteGroup(group *api.Group) error {
-	var body string
-	if group.Id != "" {
-		body = fmt.Sprintf(`{ "roomId": "%s" }`, group.Id)
-	} else {
-		body = fmt.Sprintf(`{ "roomName": "%s" }`, group.Name)
+	body, err := json.Marshal(struct {
+		RoomID   string `json:"roomId,omitempty"`
+		RoomName string `json:"roomName,omitempty"`
+	}{
+		RoomID:   group.Id,
+		RoomName: group.Name,
+	})
+	if err != nil {
+		return err
 	}
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.delete", bytes.NewBufferString(body))
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/groups.delete", bytes.NewReader(body))
 	return c.doRequest(request, new(statusResponse))
 }
 
 func (c *Client) RenameGroup(group *api.Group) (*api.Group, error) {
-	body := fmt.Sprintf(`{ "roomId": "%s", "name": "%s"}`, group.Id, group.Name)
-	request, _ := http.NewRequest("POST", c.getUrl()+"/api/v1/groups.rename", bytes.NewBufferString(body))
+	body, err := json.Marshal(struct {
+		RoomID string `json:"roomId,omitempty"`
+		Name   string `json:"name,omitempty"`
+	}{
+		RoomID: group.Id,
+		Name:   group.Name,
+	})
+	if err != nil {
+		return nil, err
+	}
+	request, _ := http.NewRequest(http.MethodPost, c.getUrl()+"/api/v1/groups.rename", bytes.NewReader(body))
 	response := new(groupResponse)
 	if err := c.doRequest(request, response); err != nil {
 		return nil, err
